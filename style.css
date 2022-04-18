@@ -1,0 +1,35 @@
+.calendar td {
+  width: 30px;
+  height: 30px;
+  background: lightgray;
+  text-align: center;
+}
+
+.calendar thead td {
+  background: gray;
+  color: white;
+}
+
+.calendar caption {
+  background: gray;
+  color: white;
+  padding: 10px;
+  margin: 2px;
+}
+
+.calendar td.weekend {
+  background: pink;
+  color: red;
+}
+
+.calendar.container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.calendar .month {
+    min-width: 224px;
+}
