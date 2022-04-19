@@ -8,7 +8,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id='content' class="container calendar"></div>
+  <div id='month' class="container calendar"></div>
+  <div id='year' class="container calendar"></div>
 </body>
-<script src="./index.js"></script>
+
+<script type="module">
+  import Calendar from './index.js';
+
+  const myCalendar1 = new Calendar(document.getElementById('month'), { type: 'month' });
+  myCalendar1.year = 1986;
+  myCalendar1.month = 'Февраль';
+  myCalendar1.show();
+
+  const myCalendar2 = new Calendar(document.getElementById('year'), { });
+  myCalendar2.year = 1986;
+  myCalendar2.show();
+</script>
+
 </html>

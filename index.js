@@ -142,32 +142,17 @@ function calendar(options) {
   function monthCalendar(year, month) {
       const monthProps = monthConfigBuilder(year, month);
       const {caption} = monthProps;
-
-      // Way 1
-
-      // const gridHtml = compose(
-      //     ({beginningEmptyCells, daysCount, endEmptyCells}) => [
-      //         ...emptyValues(beginningEmptyCells),
-      //         ...days(daysCount),
-      //         ...emptyValues(endEmptyCells)
-      //     ],
-      //     (x) => x.reduce(layoutBuilder),
-      //     (x) => x.map((row) => row.map(tdWrapperWithWeekend).join('')),
-      //     (x) => x.map(trWrapper),
-      //     (x) => x.join('')
-      // )(monthProps);
-
-      // Way 2
-
-      const monthCells = ({beginningEmptyCells, daysCount, endEmptyCells}) => [
-          ...emptyValues(beginningEmptyCells),
-          ...days(daysCount),
-          ...emptyValues(endEmptyCells)
-      ];
-
-      const wrappedRow = (row) => join(map(row, tdWrapperWithWeekend));
-
-      const gridHtml = join(map(map(reduce(monthCells(monthProps), layoutBuilder), wrappedRow), trWrapper));
+      const gridHtml = compose(
+          ({beginningEmptyCells, daysCount, endEmptyCells}) => [
+              ...emptyValues(beginningEmptyCells),
+              ...days(daysCount),
+              ...emptyValues(endEmptyCells)
+          ],
+          (x) => x.reduce(layoutBuilder),
+          (x) => x.map((row) => row.map(tdWrapperWithWeekend).join('')),
+          (x) => x.map(trWrapper),
+          (x) => x.join('')
+      )(monthProps);
 
       return (
           `<table>
@@ -186,15 +171,28 @@ function calendar(options) {
   return type === 'month' ? monthCalendar : yearCalendar;
 }
 
-// Usage
+export default class Calendar {
+    constructor(element, options = {}) {
+        this.element = element;
+        this.options = options;
+        this.year = null;
+        this.month = null;
+    }
 
-const curriedCalendar = calendar({
-  // type: 'month',
-  // monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  // weekDaysNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-  // firstWeekday: 'Sun',
-  // weekendDays: ['Sun'],
-});
+    show() {
+        /* Options example:
 
-document.getElementById('content').innerHTML = curriedCalendar(/*2000, 'Февраль'*/);
+        {
+            type: 'month',
+            monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            weekDaysNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+            firstWeekday: 'Sun',
+            weekendDays: ['Sun'],
+        }
 
+        */
+
+        const curriedCalendar = calendar(this.options);
+        this.element.innerHTML = curriedCalendar(this.year, this.month);
+    }
+}
