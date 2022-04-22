@@ -34,41 +34,71 @@ function calendar(options) {
           firstWeekday    =   options.firstWeekday || 'Пн';
 
 
-  // Algorithms
+  class Month {
+    constructor(year, month) {
+        this.setYear(year);
+        this.setMonth(month);
+        this.caption = this.getMonthCaption();
+        this.daysCount = this.getDaysCount();
+        this.beginningEmptyCells = this.getBeginningEmptyCells();
+        this.endEmptyCells = this.getEndEmptyCells(this.daysCount, this.beginningEmptyCells);
+    }
 
-  function monthConfigBuilder(year, month) {
-      var date = new Date();
-      date.setDate(1);
-      year = +year;
-      if (typeof year === 'number' && !isNaN(year) && year >= 0) {
-          date.setYear(year);
-      }
-      if (typeof month === 'string') {
-          month = monthNames.indexOf(month);
-      }
-      if (typeof month === 'number') {
-          month = Math.trunc(month);
-      }
-      if (typeof month === 'number' && !isNaN(month) && month > -1 && month < 12) {
-          date.setMonth(month);
-      } else {
-          month = date.getMonth();
-      }
-      var firstDayOfWeek = weekDaysNames[date.getDay()];
-      var totalCells = visibleWeekDays.length * 6;
-      var beginningEmptyCells = visibleWeekDays.indexOf(firstDayOfWeek);
-      if (beginningEmptyCells === -1) {
-          beginningEmptyCells = 0;
-      }
-      date.setMonth(month + 1);
-      date.setDate(0);
-      var daysCount = date.getDate();
-      return {
-          caption: monthNames[month],
-          beginningEmptyCells: beginningEmptyCells,
-          endEmptyCells: totalCells - daysCount - beginningEmptyCells,
-          daysCount: daysCount
-      };
+    setYear(year) {
+        if (typeof year === 'number' && !isNaN(year) && year >= 0) {
+            this.year = year;
+        } else {
+            this.year = new Date().getFullYear();
+        }
+    }
+
+    setMonth(month) {
+        if (typeof month === 'string') {
+            month = monthNames.indexOf(month);
+        }
+        if (typeof month === 'number') {
+            month = Math.trunc(month);
+        }
+        if (typeof month !== 'number' || isNaN(month) || month < 0 || month >= 12) {
+            month = new Date().getMonth();
+        }
+        this.month = month;
+    }
+
+    getMonthCaption() {
+        return monthNames[this.month]
+    }
+
+    getDaysCount() {
+        const date = new Date();
+        date.setDate(1);
+        date.setYear(this.year);
+        date.setMonth(this.month + 1);
+        date.setDate(0);
+        return date.getDate();
+    }
+
+    getBeginningEmptyCells() {
+        const firstDayOfWeek = this.getFirstDayOfWeek();
+        const beginningEmptyCells = visibleWeekDays.indexOf(firstDayOfWeek);
+        if (beginningEmptyCells === -1) {
+            beginningEmptyCells = 0;
+        }
+        return beginningEmptyCells;
+    }
+
+    getEndEmptyCells(daysCount, beginningEmptyCells) {
+        const totalCells = visibleWeekDays.length * 6;
+        return totalCells - daysCount - beginningEmptyCells;
+    }
+
+    getFirstDayOfWeek() {
+        const date = new Date();
+        date.setDate(1);
+        date.setYear(this.year);
+        date.setMonth(this.month);
+        return weekDaysNames[date.getDay()];
+    }
   }
 
   function * sequence(from, to) {
@@ -79,7 +109,6 @@ function calendar(options) {
 
   const compose = (...fns) => (x) => fns.reduce((x, f) => f(x), x);
   const map = (x, fn) => x.map(fn);
-  const reduce = (x, fn, val) => typeof val === 'undefined' ? x.reduce(fn) : x.reduce(fn, val);
   const join = (x) => x.join('');
 
   // Month Gird
@@ -140,7 +169,7 @@ function calendar(options) {
   const dayOfWeekHtml = trWrapper(visibleWeekDays.map(tdWrapperSimple).join(''));
 
   function monthCalendar(year, month) {
-      const monthProps = monthConfigBuilder(year, month);
+      const monthProps = new Month(year, month);
       const {caption} = monthProps;
       const gridHtml = compose(
           ({beginningEmptyCells, daysCount, endEmptyCells}) => [
