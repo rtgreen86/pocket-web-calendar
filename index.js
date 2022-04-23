@@ -10,32 +10,44 @@ Return calendar HTML
     Return function f(year, month)
 */
 
-function calendar(options) {
+const defaultOptions = {
+    type: 'year',
+    monthNames: [
+        'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль',
+        'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+    weekDaysNames: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+    weekendDays: ['Сб', 'Вс'],
+    firstWeekday: 'Пн'
+};
 
-  // Options and defaults
+class Options {
+    constructor(options) {
+        options = options || {};
+        this.type = options.type === 'month' ? options.type : defaultOptions.type;
+        this.monthNames = options.monthNames || defaultOptions.monthNames;
+        this.weekDaysNames = options.weekDaysNames || defaultOptions.weekDaysNames;
+        this.weekendDays = options.weekendDays || defaultOptions.weekendDays;
+        this.firstWeekday = options.firstWeekday || defaultOptions.firstWeekday;
+        this.firstWeekdayIndex = this.getFirstWeekdayIndex();
+        this.visibleWeekDays = this.getVisibleWeekDays();
+    }
 
-  if (options == null) {
-      options = {}
-  }
+    getFirstWeekdayIndex() {
+        return this.weekDaysNames.indexOf(this.firstWeekday) > -1 ? this.weekDaysNames.indexOf(this.firstWeekday) : 0;
+    }
 
-  const   type            =   options.type === 'month' ? options.type : 'year',
+    getVisibleWeekDays() {
+        return [
+            ...this.weekDaysNames.slice(this.firstWeekdayIndex),
+            ...this.weekDaysNames.slice(0, this.firstWeekdayIndex)
+        ];
+    }
+}
 
-
-          monthNames      =   [...new Set(options.monthNames ||
-                              ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль',
-                               'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'])],
-
-          weekDaysNames   =   [...new Set(options.weekDaysNames ||
-                              ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'])],
-
-          weekendDays     =   [...new Set(options.weekendDays ||
-                              ['Сб', 'Вс'])],
-
-          firstWeekday    =   options.firstWeekday || 'Пн';
-
-
-  class Month {
-    constructor(year, month) {
+class Month {
+    constructor(year, month, visibleWeekDays, options) {
+        this.visibleWeekDays = visibleWeekDays;
+        this.options = new Options(options);
         this.setYear(year);
         this.setMonth(month);
         this.caption = this.getMonthCaption();
@@ -54,7 +66,7 @@ function calendar(options) {
 
     setMonth(month) {
         if (typeof month === 'string') {
-            month = monthNames.indexOf(month);
+            month = this.options.monthNames.indexOf(month);
         }
         if (typeof month === 'number') {
             month = Math.trunc(month);
@@ -66,7 +78,7 @@ function calendar(options) {
     }
 
     getMonthCaption() {
-        return monthNames[this.month]
+        return this.options.monthNames[this.month]
     }
 
     getDaysCount() {
@@ -80,7 +92,7 @@ function calendar(options) {
 
     getBeginningEmptyCells() {
         const firstDayOfWeek = this.getFirstDayOfWeek();
-        const beginningEmptyCells = visibleWeekDays.indexOf(firstDayOfWeek);
+        const beginningEmptyCells = this.options.visibleWeekDays.indexOf(firstDayOfWeek);
         if (beginningEmptyCells === -1) {
             beginningEmptyCells = 0;
         }
@@ -88,7 +100,7 @@ function calendar(options) {
     }
 
     getEndEmptyCells(daysCount, beginningEmptyCells) {
-        const totalCells = visibleWeekDays.length * 6;
+        const totalCells = this.options.visibleWeekDays.length * 6;
         return totalCells - daysCount - beginningEmptyCells;
     }
 
@@ -97,9 +109,14 @@ function calendar(options) {
         date.setDate(1);
         date.setYear(this.year);
         date.setMonth(this.month);
-        return weekDaysNames[date.getDay()];
+        return this.options.weekDaysNames[date.getDay()];
     }
-  }
+}
+
+function calendar(options) {
+    options = new Options(options);
+    const type = options.type;
+    const weekendDays = options.weekendDays;
 
   function * sequence(from, to) {
       for (let i = from; i <= to; i++) yield i;
@@ -120,13 +137,6 @@ function calendar(options) {
   // const days = (count) => (+count || 0) ? [...days(count-1), count] : [];
 
   const months = () => [...sequence(0, 11)];
-
-  const firstWeekdayIndex =
-        weekDaysNames.indexOf(firstWeekday) > -1 ? weekDaysNames.indexOf(firstWeekday) : 0;
-
-  const visibleWeekDays = [
-      ...weekDaysNames.slice(firstWeekdayIndex),
-      ...weekDaysNames.slice(0, firstWeekdayIndex)];
 
   /*
 
@@ -156,7 +166,7 @@ function calendar(options) {
 
   const tdWrapper = (weekendDays) => (day, index) => {
       return weekendDays
-          .map((day) => visibleWeekDays.indexOf(day))
+          .map((day) => options.visibleWeekDays.indexOf(day))
           .includes(index) ? weekendWrapper(day) : dayWrapper(day);
   };
 
@@ -166,10 +176,10 @@ function calendar(options) {
 
   const tdWrapperWithWeekend = tdWrapper(weekendDays);
 
-  const dayOfWeekHtml = trWrapper(visibleWeekDays.map(tdWrapperSimple).join(''));
+  const dayOfWeekHtml = trWrapper(options.visibleWeekDays.map(tdWrapperSimple).join(''));
 
   function monthCalendar(year, month) {
-      const monthProps = new Month(year, month);
+      const monthProps = new Month(year, month, options.visibleWeekDays, options);
       const {caption} = monthProps;
       const gridHtml = compose(
           ({beginningEmptyCells, daysCount, endEmptyCells}) => [
