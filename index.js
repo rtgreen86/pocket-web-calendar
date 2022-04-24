@@ -120,6 +120,10 @@ class Month {
             ...emptyValues(this.endEmptyCells)
         ];
     }
+
+    getLayout() {
+        return this.days.reduce(layoutBuilder, []);
+    }
 }
 
 const emptyValues = (count) => new Array(count).fill('&nbsp');
@@ -129,6 +133,27 @@ const days = (count) => [...sequence(1, count)];
 function * sequence(from, to) {
     for (let i = from; i <= to; i++) yield i;
 }
+
+/*
+layout is two dimentional array 7 column 6 row
+[
+    row: [ val, val, val, ...]
+    ...
+]
+*/
+
+function layoutBuilder(layout, value) {
+    if (!Array.isArray(layout)) {
+        layout = layoutBuilder([], layout);
+    }
+    layout =
+        (!layout.length || layout[layout.length - 1].length === 7) ?
+        [...layout, []] :
+        [...layout];
+    layout[layout.length - 1] = [...layout[layout.length - 1], value];
+    return layout;
+}
+
 
 function calendar(options) {
     options = new Options(options);
@@ -140,28 +165,6 @@ function calendar(options) {
   const map = (x, fn) => x.map(fn);
   const join = (x) => x.join('');
   const months = () => [...sequence(0, 11)];
-
-  /*
-
-  layout is two dimentional array 7 column 6 row
-  [
-      row: [ val, val, val, ...]
-      ...
-  ]
-
-  */
-
-  function layoutBuilder(layout, value) {
-      if (!Array.isArray(layout)) {
-          layout = layoutBuilder([], layout);
-      }
-      layout =
-          (!layout.length || layout[layout.length - 1].length === 7) ?
-          [...layout, []] :
-          [...layout];
-      layout[layout.length - 1] = [...layout[layout.length - 1], value];
-      return layout;
-  }
 
   const dayWrapper = (content) => `<td>${content}</td>`;
 
@@ -185,11 +188,10 @@ function calendar(options) {
       const monthProps = new Month(year, month, options.visibleWeekDays, options);
       const {caption} = monthProps;
       const gridHtml = compose(
-          (x) => x.reduce(layoutBuilder),
           (x) => x.map((row) => row.map(tdWrapperWithWeekend).join('')),
           (x) => x.map(trWrapper),
           (x) => x.join('')
-      )(monthProps.days);
+      )(monthProps.getLayout());
 
       return (
           `<table>
