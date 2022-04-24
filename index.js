@@ -54,6 +54,7 @@ class Month {
         this.daysCount = this.getDaysCount();
         this.beginningEmptyCells = this.getBeginningEmptyCells();
         this.endEmptyCells = this.getEndEmptyCells(this.daysCount, this.beginningEmptyCells);
+        this.days = this.getDays();
     }
 
     setYear(year) {
@@ -111,6 +112,22 @@ class Month {
         date.setMonth(this.month);
         return this.options.weekDaysNames[date.getDay()];
     }
+
+    getDays() {
+        return [
+            ...emptyValues(this.beginningEmptyCells),
+            ...days(this.daysCount),
+            ...emptyValues(this.endEmptyCells)
+        ];
+    }
+}
+
+const emptyValues = (count) => new Array(count).fill('&nbsp');
+
+const days = (count) => [...sequence(1, count)];
+
+function * sequence(from, to) {
+    for (let i = from; i <= to; i++) yield i;
 }
 
 function calendar(options) {
@@ -118,24 +135,10 @@ function calendar(options) {
     const type = options.type;
     const weekendDays = options.weekendDays;
 
-  function * sequence(from, to) {
-      for (let i = from; i <= to; i++) yield i;
-  }
-
   // Common functions
-
   const compose = (...fns) => (x) => fns.reduce((x, f) => f(x), x);
   const map = (x, fn) => x.map(fn);
   const join = (x) => x.join('');
-
-  // Month Gird
-
-  const emptyValues = (count) => new Array(count).fill('&nbsp');
-
-  const days = (count) => [...sequence(1, count)];
-  // Ore use recursive function
-  // const days = (count) => (+count || 0) ? [...days(count-1), count] : [];
-
   const months = () => [...sequence(0, 11)];
 
   /*
@@ -182,16 +185,11 @@ function calendar(options) {
       const monthProps = new Month(year, month, options.visibleWeekDays, options);
       const {caption} = monthProps;
       const gridHtml = compose(
-          ({beginningEmptyCells, daysCount, endEmptyCells}) => [
-              ...emptyValues(beginningEmptyCells),
-              ...days(daysCount),
-              ...emptyValues(endEmptyCells)
-          ],
           (x) => x.reduce(layoutBuilder),
           (x) => x.map((row) => row.map(tdWrapperWithWeekend).join('')),
           (x) => x.map(trWrapper),
           (x) => x.join('')
-      )(monthProps);
+      )(monthProps.days);
 
       return (
           `<table>
