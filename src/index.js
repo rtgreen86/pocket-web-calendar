@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 
 import './index.css';
 
@@ -12,5 +12,6 @@ import App from './App';
 // myCalendar2.year = 1986;
 // myCalendar2.show();
 
-const root = ReactDOM.createRoot(document.body);
+const container = document.getElementById('app-container');
+const root = ReactDOM.createRoot(container);
 root.render(<App />);
