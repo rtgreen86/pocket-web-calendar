@@ -82,7 +82,7 @@ export default class Month {
   }
 }
 
-const emptyValues = (count) => new Array(count).fill('&nbsp');
+const emptyValues = (count) => new Array(count).fill(null);
 
 const days = (count) => [...sequence(1, count)];
 

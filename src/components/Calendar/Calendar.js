@@ -1,3 +1,5 @@
+import React from 'react';
+
 
 import Options from './Options';
 import Month from './Month';
@@ -26,56 +28,67 @@ layout is two dimentional array 7 column 6 row
 ]
 */
 
+// Components
+
+const DayWrapper = ({children}) => <td>{children}</td>;
+
+const WeekendWrapper = ({children}) => <td className="weekend">{children}</td>;
+
+const TrWrapper = ({children}) => <tr>{children}</tr>;
+
 function calendar(options) {
   options = new Options(options);
   const type = options.type;
   const weekendDays = options.weekendDays;
 
   // Common functions
-  const compose = (...fns) => (x) => fns.reduce((x, f) => f(x), x);
-  const map = (x, fn) => x.map(fn);
-  const join = (x) => x.join('');
   const months = () => [...sequence(0, 11)];
 
-  const dayWrapper = (content) => `<td>${content}</td>`;
 
-  const weekendWrapper = (content) => `<td class="weekend">${content}</td>`;
-
-  const tdWrapper = (weekendDays) => (day, index) => {
+  const tdWrapper = (weekendDays) => ({children, index}) => {
     return weekendDays
       .map((day) => options.visibleWeekDays.indexOf(day))
-      .includes(index) ? weekendWrapper(day) : dayWrapper(day);
+      .includes(index) ? (
+        <WeekendWrapper>{children}</WeekendWrapper>
+      ) : (
+        <DayWrapper>{children}</DayWrapper>
+      );
   };
 
-  const trWrapper = (content) => `<tr>${content}</tr>`;
+  const TdWrapperSimple = tdWrapper([]);
 
-  const tdWrapperSimple = tdWrapper([]);
+  const TdWrapperWithWeekend = tdWrapper(weekendDays);
 
-  const tdWrapperWithWeekend = tdWrapper(weekendDays);
-
-  const dayOfWeekHtml = trWrapper(options.visibleWeekDays.map(tdWrapperSimple).join(''));
+  const DayOfWeekHtml = () => (<TrWrapper>{
+    options.visibleWeekDays.map((el) => (<TdWrapperSimple>{el}</TdWrapperSimple>))
+  }</TrWrapper>);
 
   function monthCalendar(year, month) {
     const monthProps = new Month(year, month, options.visibleWeekDays, options);
     const { caption } = monthProps;
-    const gridHtml = compose(
-      (x) => x.map((row) => row.map(tdWrapperWithWeekend).join('')),
-      (x) => x.map(trWrapper),
-      (x) => x.join('')
-    )(monthProps.getLayout());
+    const layout = monthProps.getLayout();
+    const gridElement = layout.map((row) => (
+      <TrWrapper>{
+        row.map((content, index) => <TdWrapperWithWeekend index={index} >{content}</TdWrapperWithWeekend>)
+      }</TrWrapper>
+    ));
 
     return (
-      `<table>
-              <caption>${caption}</caption>
-              <thead>${dayOfWeekHtml}</thead>
-              <tbody>${gridHtml}</tbody>
-          </table>`);
+      <table>
+        <caption>{caption}</caption>
+        <thead><DayOfWeekHtml /></thead>
+        <tbody>{gridElement}</tbody>
+      </table>
+    );
   }
 
   // Year grid
 
   function yearCalendar(year) {
-    return join(map(map(months(), (month) => monthCalendar(year, month)), (month) => `<div class="month">${month}</div>`));
+    const _monthes = months();
+    const monthCalendarElements = _monthes.map((month) => monthCalendar(year, month));
+    const wrapped = monthCalendarElements.map((m) => (<div className="month">{m}</div>))
+    return wrapped;
   }
 
   return type === 'month' ? monthCalendar : yearCalendar;
@@ -103,6 +116,6 @@ export default class Calendar {
     */
 
     const curriedCalendar = calendar(this.options);
-    this.element.innerHTML = curriedCalendar(this.year, this.month);
+    return curriedCalendar(this.year, this.month);
   }
 }
