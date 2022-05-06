@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import Options from './Options';
 import Month from './Month';
 
@@ -94,7 +93,7 @@ function calendar(options) {
   return type === 'month' ? monthCalendar : yearCalendar;
 }
 
-export default class Calendar {
+export class CalendarClass {
   constructor(element, options = {}) {
     this.element = element;
     this.options = options;
@@ -119,3 +118,21 @@ export default class Calendar {
     return curriedCalendar(this.year, this.month);
   }
 }
+
+export class Calendar extends React.Component {
+  constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+  }
+
+  render() {
+    const node = this.myRef.current;
+    const myCalendar1 = new CalendarClass(node, { type: this.props.type });
+    myCalendar1.year = this.props.year;
+    myCalendar1.month = this.props.month;
+    const el = myCalendar1.show();
+    return (<div ref={this.myRef} className="container calendar">{el}</div>);
+  }
+}
+
+export default Calendar;
