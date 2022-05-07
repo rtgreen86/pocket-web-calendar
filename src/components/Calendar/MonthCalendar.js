@@ -31,7 +31,19 @@ const WeekendWrapper = ({children}) => <td className="weekend">{children}</td>;
 
 const TrWrapper = ({children}) => <tr>{children}</tr>;
 
-function calendar(options) {
+/* Options example:
+
+{
+    !!! not used type: 'month',
+    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    weekDaysNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    firstWeekday: 'Sun',
+    weekendDays: ['Sun'],
+}
+
+*/
+
+export default function MonthCalendar({year, month, options}) {
   options = new Options(options);
   const weekendDays = options.weekendDays;
 
@@ -53,41 +65,21 @@ function calendar(options) {
     options.visibleWeekDays.map((el) => (<TdWrapperSimple>{el}</TdWrapperSimple>))
   }</TrWrapper>);
 
-  function monthCalendar(year, month) {
-    const monthProps = new Month(year, month, options.visibleWeekDays, options);
-    const { caption } = monthProps;
-    const layout = monthProps.getLayout();
-    const gridElement = layout.map((row) => (
-      <TrWrapper>{
-        row.map((content, index) => <TdWrapperWithWeekend index={index} >{content}</TdWrapperWithWeekend>)
-      }</TrWrapper>
-    ));
+  const monthProps = new Month(year, month, options.visibleWeekDays, options);
+  const { caption } = monthProps;
+  const layout = monthProps.getLayout();
 
-    return (
-      <table>
-        <caption>{caption}</caption>
-        <thead><DayOfWeekHtml /></thead>
-        <tbody>{gridElement}</tbody>
-      </table>
-    );
-  }
-
-  return monthCalendar;
-}
-
-/* Options example:
-
-{
-    !!! not used type: 'month',
-    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    weekDaysNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-    firstWeekday: 'Sun',
-    weekendDays: ['Sun'],
-}
-
-*/
-
-export default function MonthCalendar({year, month}) {
-  const curriedCalendar = calendar();
-  return curriedCalendar(year, month);
+  return (
+    <table>
+      <caption>{caption}</caption>
+      <thead><DayOfWeekHtml /></thead>
+      <tbody>{
+        layout.map((row) => (
+          <TrWrapper>{
+            row.map((content, index) => <TdWrapperWithWeekend index={index} >{content}</TdWrapperWithWeekend>)
+          }</TrWrapper>
+        ))
+      }</tbody>
+    </table>
+  );
 }
