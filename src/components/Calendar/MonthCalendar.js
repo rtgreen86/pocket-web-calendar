@@ -23,14 +23,6 @@ layout is two dimentional array 7 column 6 row
 ]
 */
 
-// Components
-
-const DayWrapper = ({children}) => <td>{children}</td>;
-
-const WeekendWrapper = ({children}) => <td className="weekend">{children}</td>;
-
-const TrWrapper = ({children}) => <tr>{children}</tr>;
-
 /* Options example:
 
 {
@@ -51,9 +43,9 @@ export default function MonthCalendar({year, month, options}) {
     return weekendDays
       .map((day) => options.visibleWeekDays.indexOf(day))
       .includes(index) ? (
-        <WeekendWrapper>{children}</WeekendWrapper>
+        <td className="weekend">{children}</td>
       ) : (
-        <DayWrapper>{children}</DayWrapper>
+        <td>{children}</td>
       );
   };
 
@@ -61,9 +53,9 @@ export default function MonthCalendar({year, month, options}) {
 
   const TdWrapperWithWeekend = tdWrapper(weekendDays);
 
-  const DayOfWeekHtml = () => (<TrWrapper>{
+  const DayOfWeekHtml = () => (<tr>{
     options.visibleWeekDays.map((el) => (<TdWrapperSimple>{el}</TdWrapperSimple>))
-  }</TrWrapper>);
+  }</tr>);
 
   const monthProps = new Month(year, month, options.visibleWeekDays, options);
   const { caption } = monthProps;
@@ -75,9 +67,9 @@ export default function MonthCalendar({year, month, options}) {
       <thead><DayOfWeekHtml /></thead>
       <tbody>{
         layout.map((row) => (
-          <TrWrapper>{
+          <tr>{
             row.map((content, index) => <TdWrapperWithWeekend index={index} >{content}</TdWrapperWithWeekend>)
-          }</TrWrapper>
+          }</tr>
         ))
       }</tbody>
     </table>
