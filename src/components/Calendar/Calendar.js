@@ -5,9 +5,9 @@ import YearCalendar from './YearCalendar';
 
 export default function Calendar({type, year, month}) {
   if (type !== 'month') {
-    return (<div className="container calendar">
+    return (<div className="container calendar"><div className="year">
       <YearCalendar year={year} />
-    </div>);
+    </div></div>);
   }
   return (<div className="container calendar">
     <MonthCalendar year={year} month={month} />
