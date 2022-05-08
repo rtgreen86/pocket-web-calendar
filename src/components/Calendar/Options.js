@@ -8,7 +8,29 @@ export const defaultOptions = {
   firstWeekday: 'Пн'
 };
 
+/**
+ * Calendar options
+ *
+ * @property {Array<string>} monthNames list of month names
+ * @property {Array<string>} weekDaysNames list of week days names start from sunday
+ * @property {Array<string>} weekendDays weekend days
+ * @property {number} firstWeekday first week day
+ */
 export class Options {
+  /**
+   * Create an Options
+   * @param {Object} options values for options
+   *
+   * @example
+   *
+   * {
+   *    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+   *    weekDaysNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+   *    firstWeekday: 0,
+   *    weekendDays: ['Sun'],
+   * }
+   *
+   */
   constructor(options) {
     options = options || {};
     this.type = options.type === 'month' ? options.type : defaultOptions.type;

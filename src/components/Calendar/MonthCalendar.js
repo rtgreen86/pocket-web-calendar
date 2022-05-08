@@ -4,35 +4,11 @@ import Options from './Options';
 import Month from './Month';
 
 /*
-Return calendar HTML
-    Options:
-        (!!! not used) type: 'month' | 'year' Calendar type
-        monthNames: {Array<string>} list of month names
-        weekDaysNames: {Array<string>} list of week days names start from sunday
-        weekendDays: {Array<string>} weekend days
-        firstWeekday: name of frist week day
-
-    Return function f(year, month)
-*/
-
-/*
 layout is two dimentional array 7 column 6 row
 [
     row: [ val, val, val, ...]
     ...
 ]
-*/
-
-/* Options example:
-
-{
-    !!! not used type: 'month',
-    monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    weekDaysNames: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
-    firstWeekday: 'Sun',
-    weekendDays: ['Sun'],
-}
-
 */
 
 export default function MonthCalendar({year, month, options}) {
