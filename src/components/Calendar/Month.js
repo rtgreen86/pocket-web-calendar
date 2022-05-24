@@ -77,6 +77,31 @@ export default class Month {
     ];
   }
 
+  getDays2() {
+    const firstDayOfWeek = new Date(this.year, this.month, 1).getDay();
+    const lastDate = new Date(this.year, this.month + 1, 0).getDate();
+    const grid = [];
+
+    let cellNo = 0;
+    let date = 1;
+
+    for (let i = 0; i < 6; i++) { // rows
+      grid[i] = [];
+      for (let j = 0; j < 7; j++) {
+        grid[i][j] = {};
+        grid[i][j].caption = '';
+        if (cellNo >= firstDayOfWeek && date <= lastDate) {
+          grid[i][j].caption = date;
+          date++;
+        }
+        grid[i][j].cellNo = cellNo;
+        cellNo++;
+      }
+    }
+
+    return grid;
+  }
+
   getLayout() {
     return this.days.reduce(layoutBuilder, []);
   }
