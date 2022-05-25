@@ -17,10 +17,8 @@ export default function MonthCalendar2({year, month, options}) {
   options = new Options(options);
   const weekendDays = options.weekendDays;
 
-  const tdWrapper = (weekendDays) => ({children, index}) => {
-    return weekendDays
-      .map((day) => options.visibleWeekDays.indexOf(day))
-      .includes(index) ? (
+  const tdWrapper = (weekendDays) => ({children, isWeekend}) => {
+    return isWeekend ? (
         <td className="weekend">{children}</td>
       ) : (
         <td>{children}</td>
@@ -48,7 +46,7 @@ export default function MonthCalendar2({year, month, options}) {
       <tbody>{
         grid.map((row, index) => (
           <tr key={index}>{
-            row.map(({cellNo, caption}) => <TdWrapperWithWeekend key={cellNo} >{caption}</TdWrapperWithWeekend>)
+            row.map(({cellNo, caption, isWeekend}) => <TdWrapperWithWeekend isWeekend={isWeekend} key={cellNo} >{caption}</TdWrapperWithWeekend>)
           }</tr>
         ))
       }</tbody>

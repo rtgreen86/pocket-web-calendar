@@ -13,7 +13,7 @@ layout is two dimentional array 7 column 6 row
 
 export default function MonthCalendar({year, month, options}) {
   options = new Options(options);
-  const weekendDays = options.weekendDays;
+  const weekendDays = options.weekendDays.map(num => options.weekDaysNames[num]);
 
   const tdWrapper = (weekendDays) => ({children, index}) => {
     return weekendDays

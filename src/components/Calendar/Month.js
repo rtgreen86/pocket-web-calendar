@@ -90,6 +90,7 @@ export default class Month {
       for (let j = 0; j < 7; j++) {
         grid[i][j] = {};
         grid[i][j].caption = '';
+        grid[i][j].isWeekend = this.options.weekendDays.includes(j);
         if (cellNo >= firstDayOfWeek && date <= lastDate) {
           grid[i][j].caption = date;
           date++;
