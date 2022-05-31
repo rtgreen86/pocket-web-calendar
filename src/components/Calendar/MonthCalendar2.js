@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import Options from './Options';
 import Month from './Month';
@@ -53,3 +54,18 @@ export default function MonthCalendar2({year, month, options}) {
     </table>
   );
 }
+
+MonthCalendar2.propTypes = {
+  year: PropTypes.number,
+  month: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+  options: PropTypes.any,
+};
+
+MonthCalendar2.defaultProps = {
+  year: null,
+  month: null,
+  options: {},
+};
