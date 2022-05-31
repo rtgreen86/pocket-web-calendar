@@ -7,7 +7,7 @@ export default function App() {
     <Calendar year={1986}></Calendar>
     <Calendar type="month" year={1986} month="Февраль"></Calendar>
     <div className="container calendar">
-      <MonthCalendar2 year={1986} month="Февраль" />
+      <MonthCalendar2 year={1986} month="Февраль" firstDayOfWeek={1} />
     </div>
   </>);
 }

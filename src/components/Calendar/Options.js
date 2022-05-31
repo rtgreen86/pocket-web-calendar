@@ -5,7 +5,8 @@ export const defaultOptions = {
     'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
   weekDaysNames: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
   weekendDays: [0, 6],
-  firstWeekday: 'Пн'
+  firstWeekday: 'Пн',
+  firstDayOfWeek: 0
 };
 
 /**
@@ -14,7 +15,8 @@ export const defaultOptions = {
  * @property {Array<string>} monthNames list of month names
  * @property {Array<string>} weekDaysNames list of week days names start from sunday
  * @property {Array<string>} weekendDays weekend days
- * @property {number} firstWeekday first week day
+ * @property {number} firstWeekday first week day {@deprecated}
+ * @property {number} firstDayOfWeek - first day of week, 0 - sun, 1 - monday
  */
 export class Options {
   /**
@@ -38,6 +40,7 @@ export class Options {
     this.weekDaysNames = options.weekDaysNames || defaultOptions.weekDaysNames;
     this.weekendDays = options.weekendDays || defaultOptions.weekendDays;
     this.firstWeekday = options.firstWeekday || defaultOptions.firstWeekday;
+    this.firstDayOfWeek = options.firstDayOfWeek || defaultOptions.firstDayOfWeek;
     this.firstWeekdayIndex = this.getFirstWeekdayIndex();
     this.visibleWeekDays = this.getVisibleWeekDays();
   }

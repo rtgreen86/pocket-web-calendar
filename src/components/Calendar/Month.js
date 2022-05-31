@@ -69,7 +69,7 @@ export default class Month {
     return this.options.weekDaysNames[date.getDay()];
   }
 
-  getDays() {
+  getDays() { // deprecated
     return [
       ...emptyValues(this.beginningEmptyCells),
       ...days(this.daysCount),
@@ -78,7 +78,8 @@ export default class Month {
   }
 
   getDays2() {
-    const firstDayOfWeek = new Date(this.year, this.month, 1).getDay();
+    const days = [...daysOfWeekSeqence(this.options.firstDayOfWeek, 7)];
+    const firstDayOfMonth = new Date(this.year, this.month, 1).getDay();
     const lastDate = new Date(this.year, this.month + 1, 0).getDate();
     const grid = [];
 
@@ -90,8 +91,8 @@ export default class Month {
       for (let j = 0; j < 7; j++) {
         grid[i][j] = {};
         grid[i][j].caption = '';
-        grid[i][j].isWeekend = this.options.weekendDays.includes(j);
-        if (cellNo >= firstDayOfWeek && date <= lastDate) {
+        grid[i][j].isWeekend = this.options.weekendDays.includes(days[j]);
+        if (cellNo + this.options.firstDayOfWeek >= firstDayOfMonth && date <= lastDate) {
           grid[i][j].caption = date;
           date++;
         }
@@ -126,4 +127,15 @@ function layoutBuilder(layout, value) {
 
 function* sequence(from, to) {
   for (let i = from; i <= to; i++) yield i;
+}
+
+function* daysOfWeekSeqence(startFrom, count) {
+  let value = startFrom;
+  while (value > 6) value -= 7;
+  while (value < 0) value += 7;
+  while(count !== 0) {
+    count--;
+    yield value++;
+    if (value > 6) value -= 7;
+  }
 }
