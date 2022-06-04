@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Options from './Options';
-import Month from './Month';
+import Month from './Month2';
 
 /*
 layout is two dimentional array 7 column 6 row
@@ -41,16 +41,26 @@ export default function MonthCalendar2({year, month, firstDayOfWeek, options}) {
     options.visibleWeekDays.map((el) => (<TdWrapperSimple key={el}>{el}</TdWrapperSimple>))
   }</tr>);
 
-
-  const monthProps = new Month(year, month, options.visibleWeekDays, options);
+  const monthProps = new Month({
+    year,
+    month,
+    ...options,
+  });
   const { caption } = monthProps;
 
-  const grid = monthProps.getDays2();
+  const weekdays = monthProps.getWeekdays();
+  const weekdaysElements = (<tr>{
+    weekdays.map((value) => (
+      <TdWrapperSimple key={value}>{value}</TdWrapperSimple>
+    ))
+  }</tr>);
+
+  const grid = monthProps.getDays();
 
   return (
     <table>
       <caption>{caption}</caption>
-      <thead><DayOfWeekHtml /></thead>
+      <thead>{weekdaysElements}</thead>
       <tbody>{
         grid.map((row, index) => (
           <tr key={index}>{
