@@ -1,73 +1,28 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Options from './Options';
 import Month from './Month2';
 
-/*
-layout is two dimentional array 7 column 6 row
-[
-    row: [ val, val, val, ...]
-    ...
-]
-*/
-
-export default function MonthCalendar2({year, month, firstDayOfWeek, options}) {
-  options = options || {};
-
-  // deprecated
-  // used for days of week captions
-  // TODO: create new function to generate proper days of week captions
-  const daysOfWeek = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
-  options.firstWeekday = daysOfWeek[firstDayOfWeek];
-
-  options.firstDayOfWeek = firstDayOfWeek;
-  options = new Options(options);
-  const weekendDays = options.weekendDays;
-
-  const tdWrapper = (weekendDays) => ({children, isWeekend}) => {
-    return isWeekend ? (
-        <td className="weekend">{children}</td>
-      ) : (
-        <td>{children}</td>
-      );
-  };
-
-  const TdWrapperSimple = tdWrapper([]);
-
-  const TdWrapperWithWeekend = tdWrapper(weekendDays);
-
-  const DayOfWeekHtml = () => (<tr>{
-    options.visibleWeekDays.map((el) => (<TdWrapperSimple key={el}>{el}</TdWrapperSimple>))
-  }</tr>);
-
-  const monthProps = new Month({
-    year,
-    month,
-    ...options,
-  });
-  const { caption } = monthProps;
-
-  const weekdays = monthProps.getDaysOfWeekCaptions();
-  const weekdaysElements = (<tr>{
-    weekdays.map((value) => (
-      <TdWrapperSimple key={value}>{value}</TdWrapperSimple>
-    ))
-  }</tr>);
-
-  const grid = monthProps.getDays();
+export default function MonthCalendar2({
+  year,
+  month,
+  firstDayOfWeek,
+  weekendDays,
+}) {
+  const model = new Month({ year, month, firstDayOfWeek, weekendDays });
+  const monthCaption = model.getMonthCaption();
+  const daysOfWeekCaptions = model.getDaysOfWeekCaptions();
+  const daysGrid = model.getDaysGrid();
 
   return (
     <table>
-      <caption>{caption}</caption>
-      <thead>{weekdaysElements}</thead>
-      <tbody>{
-        grid.map((row, index) => (
-          <tr key={index}>{
-            row.map(({cellNo, caption, isWeekend}) => <TdWrapperWithWeekend isWeekend={isWeekend} key={cellNo} >{caption}</TdWrapperWithWeekend>)
-          }</tr>
-        ))
-      }</tbody>
+      <caption>{monthCaption}</caption>
+      <thead><tr>{daysOfWeekCaptions.map((value) => <td key={value}>{value}</td>)}</tr></thead>
+      <tbody>{daysGrid.map((row, index) => (
+        <tr key={index}>{row.map(({cellNo, caption, isWeekend}) => (
+          <td key={cellNo} className={isWeekend ? 'weekend' : ''}>{caption}</td>
+        ))}</tr>
+      ))}</tbody>
     </table>
   );
 }
@@ -79,12 +34,12 @@ MonthCalendar2.propTypes = {
     PropTypes.number,
   ]),
   firstDayOfWeek: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]),
-  options: PropTypes.any,
+  weekendDays: PropTypes.arrayOf(PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]))
 };
 
 MonthCalendar2.defaultProps = {
   year: null,
   month: null,
   firstDayOfWeek: 0,
-  options: {},
+  weekendDays: [0, 6],
 };
