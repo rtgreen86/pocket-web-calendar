@@ -6,15 +6,20 @@ export default class Month {
     const { // legcay
       locale,
       firstDayOfWeek,
+      year,
+      month
     } = options;
+
 
     this.locale = options.locale || 'en-US';
     this.firstDayOfWeek = firstDayOfWeek || 0;
 
-    this.visibleWeekDays = options.visibleWeekDays;
     this.options = new Options(options);
-    this.setYear(options.year);
-    this.setMonth(options.month);
+
+    this.monthCaptions = Captions.buildMonths(this.locale);
+    this.year = year;
+    this.month = month;
+
     this.caption = this.getMonthCaption();
     this.daysCount = this.getDaysCount();
     this.beginningEmptyCells = this.getBeginningEmptyCells();
@@ -22,25 +27,33 @@ export default class Month {
     this.days = this.getDays();
   }
 
-  setYear(year) {
-    if (typeof year === 'number' && !isNaN(year) && year >= 0) {
-      this.year = year;
+  set year(value) {
+    if (typeof value === 'number' && !isNaN(value) && value >= 0) {
+      this._year = value;
     } else {
-      this.year = new Date().getFullYear();
+      this._year = new Date().getFullYear();
     }
   }
 
-  setMonth(month) {
-    if (typeof month === 'string') {
-      month = this.options.monthNames.indexOf(month);
+  get year() {
+    return this._year;
+  }
+
+  set month(value) {
+    if (typeof value === 'string') {
+      value = this.monthCaptions.indexOf(value);
     }
-    if (typeof month === 'number') {
-      month = Math.trunc(month);
+    if (typeof value === 'number') {
+      value = Math.trunc(value);
     }
-    if (typeof month !== 'number' || isNaN(month) || month < 0 || month >= 12) {
-      month = new Date().getMonth();
+    if (typeof value !== 'number' || isNaN(value) || value < 0 || value >= 12) {
+      value = new Date().getMonth();
     }
-    this.month = month;
+    this._month = value;
+  }
+
+  get month() {
+    return this._month;
   }
 
   getDaysCount() {
@@ -75,8 +88,7 @@ export default class Month {
   }
 
   getMonthCaption() {
-    const captions = Captions.buildMonths(this.locale);
-    return captions[this.month];
+    return this.monthCaptions[this.month];
   }
 
   getDaysOfWeekCaptions() {
