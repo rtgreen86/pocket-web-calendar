@@ -48,7 +48,7 @@ export default function MonthCalendar2({year, month, firstDayOfWeek, options}) {
   });
   const { caption } = monthProps;
 
-  const weekdays = monthProps.getWeekdays();
+  const weekdays = monthProps.getDaysOfWeekCaptions();
   const weekdaysElements = (<tr>{
     weekdays.map((value) => (
       <TdWrapperSimple key={value}>{value}</TdWrapperSimple>

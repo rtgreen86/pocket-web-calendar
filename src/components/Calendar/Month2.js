@@ -1,16 +1,15 @@
 import Options from './Options';
-import Weekdays from './Weekdays';
+import * as Captions from './Captions';
 
 export default class Month {
   constructor(options) {
-    const {
+    const { // legcay
       locale,
       firstDayOfWeek,
     } = options;
 
-    this.locale = options.locale || 'ru-RU';
+    this.locale = options.locale || 'en-US';
     this.firstDayOfWeek = firstDayOfWeek || 0;
-
 
     this.visibleWeekDays = options.visibleWeekDays;
     this.options = new Options(options);
@@ -44,10 +43,6 @@ export default class Month {
     this.month = month;
   }
 
-  getMonthCaption() {
-    return this.options.monthNames[this.month]
-  }
-
   getDaysCount() {
     const date = new Date();
     date.setDate(1);
@@ -79,8 +74,13 @@ export default class Month {
     return this.options.weekDaysNames[date.getDay()];
   }
 
-  getWeekdays() {
-    const captions = Weekdays.create(this.locale);
+  getMonthCaption() {
+    const captions = Captions.buildMonths(this.locale);
+    return captions[this.month];
+  }
+
+  getDaysOfWeekCaptions() {
+    const captions = Captions.buildDaysOfWeek(this.locale);
     return [...daysOfWeekSeqence(this.options.firstDayOfWeek, 7)]
       .map((value) => captions[value]);
   }
