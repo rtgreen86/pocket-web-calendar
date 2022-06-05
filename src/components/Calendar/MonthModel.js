@@ -1,7 +1,6 @@
-import Options from './Options';
 import * as Captions from './Captions';
 
-export default class Month {
+export default class MonthModel {
   constructor({
     locale,
     firstDayOfWeek = 0,
