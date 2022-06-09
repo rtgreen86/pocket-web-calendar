@@ -6,7 +6,6 @@
   "scripts": {
     "serve": "webpack serve",
     "build": "webpack",
-    "doc": "jsdoc -d dist/doc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -26,7 +25,6 @@
     "css-loader": "^6.7.1",
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.0",
-    "jsdoc": "^3.6.10",
     "prop-types": "^15.8.1",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
