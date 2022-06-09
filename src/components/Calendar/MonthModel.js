@@ -1,4 +1,4 @@
-import * as Captions from './Captions';
+import { getDaysOfWeekCaptions, getMonthesCaptions } from './Captions';
 
 export default class MonthModel {
   constructor({
@@ -12,8 +12,8 @@ export default class MonthModel {
     this.month = month;
     this.firstDayOfWeek = firstDayOfWeek;
     this.weekendDays = weekendDays;
-    this.daysOfWeekCaptions = Captions.buildDaysOfWeek(locale);
-    this.monthCaptions = Captions.buildMonths(locale);
+    this.daysOfWeekCaptions = getDaysOfWeekCaptions(locale);
+    this.monthCaptions = getMonthesCaptions(locale);
   }
 
   set year(value) {

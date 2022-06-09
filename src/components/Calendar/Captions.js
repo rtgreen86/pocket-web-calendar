@@ -1,4 +1,4 @@
-export function buildDaysOfWeek(locale) {
+export function getDaysOfWeekCaptions(locale) {
   const date = new Date();
   const intl = new Intl.DateTimeFormat(locale, {
     weekday: 'short'
@@ -8,12 +8,11 @@ export function buildDaysOfWeek(locale) {
     date.setDate(i);
     const day = date.getDay();
     weekdays[day] = intl.format(date);
-
   }
   return weekdays;
 }
 
-export function buildMonths(locale) {
+export function getMonthesCaptions(locale) {
   const date = new Date();
   date.setDate(1);
   date.setMonth(1);

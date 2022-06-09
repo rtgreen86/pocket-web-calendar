@@ -1,9 +1,11 @@
+import './styles.css';
+
 import React from 'react';
 
-import MonthPropTypes from './MonthPropTypes';
+import { MonthCalendarPropTypes } from './PropTypes';
 import MonthModel from './MonthModel';
 
-export default function Month({
+export default function MonthGrid({
   year,
   month,
   firstDayOfWeek,
@@ -27,9 +29,9 @@ export default function Month({
   );
 }
 
-Month.propTypes = MonthPropTypes;
+MonthGrid.propTypes = MonthCalendarPropTypes;
 
-Month.defaultProps = {
+MonthGrid.defaultProps = {
   year: undefined,
   month: undefined,
   firstDayOfWeek: 0,
