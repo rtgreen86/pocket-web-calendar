@@ -17,6 +17,14 @@
   margin: 2px;
 }
 
+.calendar .caption {
+  background: gray;
+  color: white;
+  padding: 10px;
+  margin: 0px 2px;
+  text-align: center;
+}
+
 .calendar td.weekend {
   background: pink;
   color: red;
@@ -24,10 +32,10 @@
 
 .calendar.container {
   width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  display: grid;
   justify-content: center;
+  grid-template: auto auto / auto;
+  gap: 10px;
 }
 
 .calendar.container .year {
