@@ -1,4 +1,4 @@
-import { getDaysOfWeekCaptions, getMonthesCaptions } from './Captions';
+import { getDaysOfWeekCaptions, getMonthesCaptions } from './captions';
 
 export default class MonthModel {
   constructor({
