@@ -25,6 +25,21 @@
   text-align: center;
 }
 
+.calendar td.red {
+  background: pink;
+  color: red;
+}
+
+.calendar td.green {
+  background: lightgreen;
+  color: green;
+}
+
+.calendar td.blue {
+  background: lightblue;
+  color: blue;
+}
+
 .calendar td.weekend {
   background: pink;
   color: red;

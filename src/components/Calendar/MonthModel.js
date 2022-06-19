@@ -7,6 +7,7 @@ export default class MonthModel {
     year = 1981,
     month = 8,
     weekendDays = [],
+    marks = {}
   }) {
     this.year = year;
     this.month = month;
@@ -14,6 +15,7 @@ export default class MonthModel {
     this.weekendDays = weekendDays;
     this.daysOfWeekCaptions = getDaysOfWeekCaptions(locale);
     this.monthCaptions = getMonthesCaptions(locale);
+    this.marks = marks;
   }
 
   set year(value) {
@@ -67,7 +69,17 @@ export default class MonthModel {
         grid[i][j] = {};
         grid[i][j].caption = '';
         grid[i][j].isWeekend = this.weekendDays.includes(days[j]);
+        grid[i][j].marks = '';
         if (cellNo + this.firstDayOfWeek >= firstDayOfMonth && date <= lastDate) {
+          const isoDate = [
+            '0000'.substring(this.year.toString().length).concat(this.year.toString()),
+            '00'.substring((this.month + 1).toString().length).concat((this.month + 1).toString()),
+            '00'.substring(date.toString().length).concat(date.toString())
+          ].join('-');
+          grid[i][j].date = isoDate;
+          if (this.marks[isoDate]) {
+            grid[i][j].marks = this.marks[isoDate];
+          }
           grid[i][j].caption = date;
           date++;
         }
