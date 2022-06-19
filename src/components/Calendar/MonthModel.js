@@ -4,8 +4,8 @@ export default class MonthModel {
   constructor({
     locale,
     firstDayOfWeek = 0,
-    year,
-    month,
+    year = 1981,
+    month = 8,
     weekendDays = [],
   }) {
     this.year = year;
