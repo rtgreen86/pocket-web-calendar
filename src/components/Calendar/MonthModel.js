@@ -1,4 +1,5 @@
 import { getDaysOfWeekCaptions, getMonthesCaptions } from './captions';
+import Formatter from './Formatter';
 
 export default class MonthModel {
   constructor({
@@ -71,11 +72,7 @@ export default class MonthModel {
         grid[i][j].isWeekend = this.weekendDays.includes(days[j]);
         grid[i][j].marks = '';
         if (cellNo + this.firstDayOfWeek >= firstDayOfMonth && date <= lastDate) {
-          const isoDate = [
-            '0000'.substring(this.year.toString().length).concat(this.year.toString()),
-            '00'.substring((this.month + 1).toString().length).concat((this.month + 1).toString()),
-            '00'.substring(date.toString().length).concat(date.toString())
-          ].join('-');
+          const isoDate = Formatter.isoDate(new Date(this.year, this.month, date));
           grid[i][j].date = isoDate;
           if (this.marks[isoDate]) {
             grid[i][j].marks = this.marks[isoDate];
