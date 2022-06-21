@@ -1,17 +1,13 @@
 import { getDaysOfWeekCaptions, getMonthesCaptions } from './captions';
 import Formatter from './Formatter';
 
-export default class MonthModel {
+export default class MonthFactory {
   constructor({
     locale,
     firstDayOfWeek = 0,
-    year = 1981,
-    month = 8,
     weekendDays = [],
     marks = {}
   }) {
-    this.year = year;
-    this.month = month;
     this.firstDayOfWeek = firstDayOfWeek;
     this.weekendDays = weekendDays;
     this.daysOfWeekCaptions = getDaysOfWeekCaptions(locale);
@@ -19,48 +15,43 @@ export default class MonthModel {
     this.marks = marks;
   }
 
-  set year(value) {
+  static normalizeYear(value) {
     if (typeof value === 'number' && !isNaN(value) && value >= 0) {
-      this._year = value;
-    } else {
-      this._year = new Date().getFullYear();
+      return value;
     }
+    return new Date().getFullYear();
   }
 
-  get year() {
-    return this._year;
-  }
-
-  set month(value) {
-    if (typeof value === 'string') {
-      value = this.monthCaptions.indexOf(value);
-    }
+  static normalizeMonth(value) {
     if (typeof value === 'number') {
       value = Math.trunc(value);
     }
     if (typeof value !== 'number' || isNaN(value) || value < 0 || value >= 12) {
       value = new Date().getMonth();
     }
-    this._month = value;
+    return value;
   }
 
-  get month() {
-    return this._month;
+  buildMonthCaption(month) {
+    month = MonthFactory.normalizeMonth(month);
+    return this.monthCaptions[month];
   }
 
-  getMonthCaption() {
-    return this.monthCaptions[this.month];
+  buildDaysWeek() {
+    return [...daysSeqence(this.firstDayOfWeek, 7)]
   }
 
-  getDaysOfWeekCaptions() {
-    return [...daysOfWeekSeqence(this.firstDayOfWeek, 7)]
-      .map((value) => this.daysOfWeekCaptions[value]);
+  buildDaysWeekCaptions() {
+    const days = this.buildDaysWeek();
+    return days.map((value) => this.daysOfWeekCaptions[value]);
   }
 
-  getDaysGrid() {
-    const days = [...daysOfWeekSeqence(this.firstDayOfWeek, 7)];
-    const firstDayOfMonth = new Date(this.year, this.month, 1).getDay();
-    const lastDate = new Date(this.year, this.month + 1, 0).getDate();
+  buildDatesGrid(year, month) {
+    year = MonthFactory.normalizeYear(year);
+    month = MonthFactory.normalizeMonth(month);
+    const days = this.buildDaysWeek();
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
     const grid = [];
     let cellNo = 0;
     let date = 1;
@@ -72,7 +63,7 @@ export default class MonthModel {
         grid[i][j].isWeekend = this.weekendDays.includes(days[j]);
         grid[i][j].marks = '';
         if (cellNo + this.firstDayOfWeek >= firstDayOfMonth && date <= lastDate) {
-          const isoDate = Formatter.isoDate(new Date(this.year, this.month, date));
+          const isoDate = Formatter.isoDate(new Date(year, month, date));
           grid[i][j].date = isoDate;
           if (this.marks[isoDate]) {
             grid[i][j].marks = this.marks[isoDate];
@@ -86,9 +77,19 @@ export default class MonthModel {
     }
     return grid;
   }
+
+  buildMonth(year, month) {
+    year = MonthFactory.normalizeYear(year);
+    month = MonthFactory.normalizeMonth(month);
+    return {
+      caption: this.buildMonthCaption(month),
+      daysWeek: this.buildDaysWeekCaptions(),
+      grid: this.buildDatesGrid(year, month)
+    };
+  }
 }
 
-function* daysOfWeekSeqence(startFrom, count) {
+function* daysSeqence(startFrom, count) {
   let value = startFrom;
   while (value > 6) value -= 7;
   while (value < 0) value += 7;
