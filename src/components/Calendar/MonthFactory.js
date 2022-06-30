@@ -1,4 +1,4 @@
-import { getDaysOfWeekCaptions, getMonthesCaptions } from './captions';
+import { getDaysOfWeekCaptions, getMonthesCaptions } from './Captions';
 import Formatter from './Formatter';
 
 export default class MonthFactory {
