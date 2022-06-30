@@ -1,8 +1,6 @@
-import './styles.css';
-
 import React from 'react';
 
-import { MonthCalendarPropTypes } from './PropTypes';
+import MonthCalendarPropTypes from './PropTypes';
 import MonthFactory from './MonthFactory';
 
 export default function MonthGrid({
