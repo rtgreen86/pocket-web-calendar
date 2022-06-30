@@ -1,5 +1,5 @@
 import React from 'react';
-import { MonthCalendar, YearCalendar } from './Calendar';
+import { MonthCalendar, YearCalendar } from '.';
 
 export default function App() {
   const marks = {
