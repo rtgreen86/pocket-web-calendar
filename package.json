@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "webpack serve",
     "build": "webpack",
+    "build:lib": "babel src -d lib",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +20,7 @@
   },
   "homepage": "https://github.com/rtgreen86/pocket-web-calendar#readme",
   "devDependencies": {
+    "@babel/cli": "^7.18.6",
     "@babel/core": "^7.17.9",
     "@babel/preset-react": "^7.16.7",
     "babel-loader": "^8.2.5",
