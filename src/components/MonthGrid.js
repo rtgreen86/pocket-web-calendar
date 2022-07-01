@@ -1,7 +1,6 @@
 import React from 'react';
-
-import MonthCalendarPropTypes from './PropTypes';
-import MonthFactory from './MonthFactory';
+import PropTypes from 'prop-types';
+import MonthFactory from '../common/MonthFactory';
 
 export default function MonthGrid({
   year,
@@ -26,7 +25,16 @@ export default function MonthGrid({
   );
 }
 
-MonthGrid.propTypes = MonthCalendarPropTypes;
+MonthGrid.propTypes = {
+  year: PropTypes.number,
+  firstDayOfWeek: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]),
+  weekendDays: PropTypes.arrayOf(PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6])),
+  marks: PropTypes.objectOf(PropTypes.string),
+  month: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+};
 
 MonthGrid.defaultProps = {
   year: 1981,

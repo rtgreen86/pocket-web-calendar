@@ -1,9 +1,6 @@
-import './styles.css';
-
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import MonthGrid from './MonthGrid';
-import { YearCalendarPropTypes } from './PropTypes';
 
 export default function YearCalendar({year, firstDayOfWeek, weekendDays, marks}) {
   return (<div className="container calendar">
@@ -17,7 +14,12 @@ export default function YearCalendar({year, firstDayOfWeek, weekendDays, marks})
   }</div></div>);
 }
 
-YearCalendar.propTypes = YearCalendarPropTypes;
+YearCalendar.propTypes = {
+  year: PropTypes.number,
+  firstDayOfWeek: PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6]),
+  weekendDays: PropTypes.arrayOf(PropTypes.oneOf([0, 1, 2, 3, 4, 5, 6])),
+  marks: PropTypes.objectOf(PropTypes.string)
+};
 
 YearCalendar.defaultProps = {
   year: undefined,
