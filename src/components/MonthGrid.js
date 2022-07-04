@@ -7,10 +7,15 @@ export default function MonthGrid({
   month,
   firstDayOfWeek,
   weekendDays,
-  marks
+  marks,
+  onClick,
 }) {
   const factory = new MonthFactory({ firstDayOfWeek, weekendDays, marks });
   const {caption, daysWeek, grid} = factory.buildMonth(year, month);
+
+  const handleDayClick = (date) => {
+    if (date && onClick) onClick(date);
+  }
 
   return (
     <table>
@@ -18,7 +23,12 @@ export default function MonthGrid({
       <thead><tr>{daysWeek.map((value) => <td key={value}>{value}</td>)}</tr></thead>
       <tbody>{grid.map((row, index) => (
         <tr key={index}>{row.map(({cellNo, caption, isWeekend, marks, date}) => (
-          <td key={cellNo} className={(isWeekend ? 'weekend' : '') + marks} data-date={date}>{caption}</td>
+          <td
+            key={cellNo}
+            className={(isWeekend ? 'weekend' : '') + marks}
+            data-date={date}
+            onClick={() => handleDayClick(date)}
+          >{caption}</td>
         ))}</tr>
       ))}</tbody>
     </table>
@@ -34,6 +44,7 @@ MonthGrid.propTypes = {
     PropTypes.string,
     PropTypes.number,
   ]),
+  onClick: PropTypes.func,
 };
 
 MonthGrid.defaultProps = {
@@ -42,4 +53,5 @@ MonthGrid.defaultProps = {
   firstDayOfWeek: 0,
   weekendDays: [0, 6],
   marks: {},
+  onClick: () => {}
 };

@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import MonthGrid from './MonthGrid';
 
-export default function YearCalendar({year, firstDayOfWeek, weekendDays, marks}) {
+export default function YearCalendar({year, firstDayOfWeek, weekendDays, marks, ...props}) {
   return (<div className="container calendar">
     <div className="caption">{year}</div>
     <div className="year">{
     Array.from({length: 12}, (el, idx) => idx).map((month) => (
       <div key={month} className="month">
-        <MonthGrid year={year} month={month} firstDayOfWeek={firstDayOfWeek} weekendDays={weekendDays} marks={marks}/>
+        <MonthGrid year={year} month={month} firstDayOfWeek={firstDayOfWeek} weekendDays={weekendDays} marks={marks} {...props}/>
       </div>
     ))
   }</div></div>);
