@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MonthFactory from '../common/MonthFactory';
+import MonthFactory from '../MonthFactory';
 
 export default function MonthGrid({
   year,
